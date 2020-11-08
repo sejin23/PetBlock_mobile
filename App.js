@@ -1,21 +1,26 @@
-import { StatusBar } from 'expo-status-bar';
+import 'react-native-gesture-handler';
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import { useFonts, Ubuntu_500Medium } from '@expo-google-fonts/ubuntu';
+import AppNavigator from './src/navigations/AppNavigator';
+import Reducers from './src/reducers';
+import { createStore, applyMiddleware } from 'redux';
+import { Provider } from 'react-redux';
+import ReduxThunk from 'redux-thunk';
+import { AppLoading } from 'expo';
+
+const store = createStore(Reducers, applyMiddleware(ReduxThunk));
 
 export default function App() {
+  let [ fontsLoaded ] = useFonts({
+      Ubuntu_500Medium,
+  })
+  if(!fontsLoaded) return <AppLoading />
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <Provider store={store}>
+      <NavigationContainer>
+        <AppNavigator />
+      </NavigationContainer>
+    </Provider>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
